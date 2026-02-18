@@ -16,7 +16,7 @@ const (
 	stepLengthCoefficient      = 0.45 // коэффициент для расчета длины шага на основе роста.
 	walkingCaloriesCoefficient = 0.5  // коэффициент для расчета калорий при ходьбе
 )
-
+// разбираю строкии формата "3456,Ходьба,3h00m"
 func parseTraining(data string) (int, string, time.Duration, error) {
 	parts := strings.Split(data, ",")
 	if len(parts) != 3 {
@@ -42,7 +42,7 @@ func parseTraining(data string) (int, string, time.Duration, error) {
 	}
 	return steps, activity, dur, nil
 }
-
+// расчитал дистанцию в км
 func distance(steps int, height float64) float64 {
 	if steps <= 0 || height <= 0 {
 		return 0
@@ -50,7 +50,7 @@ func distance(steps int, height float64) float64 {
 	stepLen := height *stepLengthCoefficient
 	return (float64(steps) * stepLen) / mInKm
 }
-
+//средняя скорость в км
 func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 	if duration <= 0 {
 		return 0
@@ -62,7 +62,7 @@ func meanSpeed(steps int, height float64, duration time.Duration) float64 {
 	}
 	return dist / hours
 }
-
+// калории при беге
 func RunningSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 || weight <= 0 || height <= 0 || duration <= 0 {
 		return 0, fmt.Errorf("invalid input value")
@@ -72,7 +72,7 @@ func RunningSpentCalories(steps int, weight, height float64, duration time.Durat
 	calories := (weight * speed * minutes) / minInH
 	return  calories, nil
 }
-
+// калории при ходьбе (+ кофф)
 func WalkingSpentCalories(steps int, weight, height float64, duration time.Duration) (float64, error) {
 	if steps <= 0 || height <=0 || weight <=0 || duration <=0 {
 		return 0, fmt.Errorf("invalid input value")
@@ -83,7 +83,7 @@ func WalkingSpentCalories(steps int, weight, height float64, duration time.Durat
 	calories *= walkingCaloriesCoefficient
 	return calories, nil
 }
-
+// формирование итог строки по тренировке
 func TrainingInfo(data string, weight, height float64) (string, error) {
 	steps, activity, duration, err := parseTraining(data)
 	if err != nil {
